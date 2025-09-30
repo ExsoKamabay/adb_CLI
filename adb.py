@@ -293,8 +293,7 @@ def disconnect_device():
 
 def show_help():
     help_text = """
-[bold cyan]Panduan Penggunaan Menu ADB[/bold cyan]
-
+    
 1. List devices -> adb devices -l
 2. Start ADB server -> adb start-server
 3. Stop ADB server -> adb kill-server
@@ -490,3 +489,4 @@ def main_loop():
 
 if __name__ == "__main__":
     main_loop()
+
