@@ -58,6 +58,9 @@ Script ini bersifat **cross-platform** (Windows, Linux, macOS) dan dilengkapi de
 
 ## 🚀 Cara Menjalankan
 
+```bash
+pip install rich requests
+```
 
 ```bash
 python adb.py
