@@ -82,7 +82,7 @@ def which_adb() -> str:
     return exe
 
 
-def ensure_adb():
+def ensure_adb() -> str:
     exe = which_adb()
     if which(exe):
         return exe
@@ -90,7 +90,51 @@ def ensure_adb():
     adb_path = adb_dir / ("adb.exe" if os.name == "nt" else "adb")
     if adb_path.exists():
         return str(adb_path)
-    console.print("[yellow]ADB tidak ditemukan. Silakan pasang manual (platform-tools).[/yellow]")
+
+    # ---- Auto install jika belum ada ----
+    console.print("[yellow]ADB tidak ditemukan, mencoba menginstall...[/yellow]")
+    os_tag = get_os_tag()
+    adb_dir.mkdir(parents=True, exist_ok=True)
+
+    if os_tag == "windows":
+        url = "https://dl.google.com/android/repository/platform-tools-latest-windows.zip"
+        import requests, zipfile
+        zip_path = adb_dir / "platform-tools.zip"
+        console.print("[cyan]Mengunduh platform-tools untuk Windows...[/cyan]")
+        try:
+            with requests.get(url, stream=True, timeout=120) as r:
+                r.raise_for_status()
+                with open(zip_path, "wb") as f:
+                    for chunk in r.iter_content(1024 * 1024):
+                        f.write(chunk)
+            with zipfile.ZipFile(zip_path, 'r') as z:
+                z.extractall(APP_ROOT)
+            if adb_path.exists():
+                return str(adb_path)
+        except Exception as e:
+            console.print(f"[red]Gagal download ADB: {e}[/red]")
+            return exe
+
+    elif os_tag == "linux":
+        console.print("[cyan]Mencoba install adb via apt...[/cyan]")
+        try:
+            subprocess.run(["sudo", "apt-get", "update"], check=False)
+            subprocess.run(["sudo", "apt-get", "install", "-y", "adb"], check=True)
+            return which("adb") or exe
+        except Exception as e:
+            console.print(f"[red]Gagal install adb di Linux: {e}[/red]")
+            return exe
+
+    elif os_tag == "darwin":
+        console.print("[cyan]Mencoba install adb via brew...[/cyan]")
+        try:
+            subprocess.run(["brew", "install", "android-platform-tools"], check=True)
+            return which("adb") or exe
+        except Exception as e:
+            console.print(f"[red]Gagal install adb di macOS: {e}[/red]")
+            return exe
+
+    console.print("[yellow]Silakan install ADB secara manual jika otomatis gagal.[/yellow]")
     return exe
 
 
@@ -489,4 +533,5 @@ def main_loop():
 
 if __name__ == "__main__":
     main_loop()
+
 
