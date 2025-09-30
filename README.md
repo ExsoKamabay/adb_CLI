@@ -60,3 +60,6 @@ Script ini bersifat **cross-platform** (Windows, Linux, macOS) dan dilengkapi de
 
 ```bash
 python adb.py
+
+![Logo dracOs](menu.png)
+
