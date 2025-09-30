@@ -58,8 +58,9 @@ Script ini bersifat **cross-platform** (Windows, Linux, macOS) dan dilengkapi de
 
 ## 🚀 Cara Menjalankan
 
+
 ```bash
 python adb.py
+```
 
 ![Logo dracOs](menu.png)
-
